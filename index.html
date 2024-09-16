@@ -67,11 +67,12 @@
 </div>
 
 <script>
-    let num1, num2, correctAnswer, startTime, questionStartTime, totalStartTime, questionTimerInterval, totalTimerInterval;
+    let num1, num2, correctAnswer, questionStartTime, totalStartTime, questionTimerInterval, totalTimerInterval;
     let correctCount = 0;
     let wrongCount = 0;
     let totalQuestions = 0;
     let testInProgress = false;
+    let totalElapsedTime = 0; // Holds total elapsed time when paused
 
     // Start the total timer and generate the first question
     function startTest() {
@@ -98,6 +99,7 @@
     function pauseTest() {
         clearInterval(totalTimerInterval);
         clearInterval(questionTimerInterval);
+        totalElapsedTime += (new Date().getTime() - totalStartTime) / 1000; // Add the time passed so far
         testInProgress = false;
 
         document.getElementById('pauseTest').disabled = true;
@@ -113,6 +115,7 @@
         correctCount = 0;
         wrongCount = 0;
         totalQuestions = 0;
+        totalElapsedTime = 0; // Reset elapsed time
         document.getElementById('totalQuestions').innerHTML = 0;
         document.getElementById('correctAnswers').innerHTML = 0;
         document.getElementById('wrongAnswers').innerHTML = 0;
@@ -154,9 +157,9 @@
 
     // Timer for the total time from the start of the test
     function startTotalTimer() {
-        totalStartTime = new Date().getTime();
+        totalStartTime = new Date().getTime(); // Update the new start time
         totalTimerInterval = setInterval(function() {
-            let elapsedTime = Math.floor((new Date().getTime() - totalStartTime) / 1000);
+            let elapsedTime = Math.floor(totalElapsedTime + (new Date().getTime() - totalStartTime) / 1000);
             document.getElementById('totalTimer').innerHTML = `Total Time: ${elapsedTime} seconds`;
         }, 1000);
     }
